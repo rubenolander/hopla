@@ -26,6 +26,7 @@ export class Floor {
         isStatic: true,
       }
     );
+    this.body.gamePlatform = this;
     Matter.World.add(App.physics.world, this.body);
   }
 }

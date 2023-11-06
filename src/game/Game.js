@@ -64,7 +64,6 @@ export class Game {
     function gameLoop() {
       //Jumps
       if (keys[movementKeyCodes.P1Jump]) {
-        console.log("hej");
         this.playerOne.jump();
       }
       if (keys[movementKeyCodes.P2Jump]) {
@@ -97,7 +96,16 @@ export class Game {
 
   onCollisionStart(e) {
     const colliders = [e.pairs[0].bodyA, e.pairs[0].bodyB];
-    const hero = colliders.find((body) => body.gameHero);
+    const playerOne = colliders.find((body) => body.bodyName === "ostrich");
+    const playerTwo = colliders.find((body) => body.bodyName === "other");
+
     const platform = colliders.find((body) => body.gamePlatform);
+    if ((playerOne && platform) || (playerTwo && platform)) {
+      if (playerOne) {
+        this.playerOne.onGround(platform.gamePlatform);
+      } else if (playerTwo) {
+        this.playerTwo.onGround(platform.gamePlatform);
+      }
+    }
   }
 }

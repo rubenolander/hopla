@@ -4,14 +4,16 @@ import * as PIXI from "pixi.js";
 
 export class Player {
   constructor(posX, posY, character) {
-    this.createBody(posX, posY);
+    this.createBody(posX, posY, character);
     this.createSprite(posX, posY, character);
     App.app.ticker.add(this.update, this);
   }
 
-  createBody(posX, posY) {
+  createBody(posX, posY, character) {
     this.body = Matter.Bodies.rectangle(posX, posY, 32, 32, {
       friction: 0.5,
+      bodyName: character,
+      frictionAir: 0.04,
     });
     Matter.World.add(App.physics.world, this.body);
     this.body.player = this;
@@ -43,10 +45,14 @@ export class Player {
     }
   }
   jump() {
-    Matter.Body.setVelocity(this.body, { x: 0, y: -7 });
+    if (this.platform && this.jumpIndex < 1) {
+      this.jumpIndex++;
+      this.platform = null;
+      Matter.Body.setVelocity(this.body, { x: 0, y: -15 });
+    }
   }
 
-  onPlatform(platform) {
+  onGround(platform) {
     this.platform = platform;
     this.jumpIndex = 0;
   }
