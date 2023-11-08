@@ -23,6 +23,7 @@ export class Floor {
       document.body.offsetWidth * 2,
       58,
       {
+        collisionFilter: { category: 0x0002 },
         isStatic: true,
       }
     );

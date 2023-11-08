@@ -15,3 +15,18 @@ canvas {
   display: block;
   max-width: inherit;
 }
+@media screen and (min-height: 960px) {
+  html {
+    background-color: chocolate;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+  }
+  body {
+    border: 2px solid black;
+    max-height: 930px;
+    width: 100%;
+    max-width: 1920px;
+  }
+}
