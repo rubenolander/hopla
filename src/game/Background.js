@@ -18,13 +18,14 @@ export class Background {
     return this.bg;
   }
 
-  createSprites() {
+  createBgs() {
     this.sprites = [];
 
     for (let tiles = 0; tiles < 3; tiles++) {
       this.createSprite(tiles);
     }
   }
+
   createSprite(tiles) {
     this.sprite = PIXI.Sprite.from("/sprites/background.png");
 
@@ -32,6 +33,7 @@ export class Background {
     this.container.addChild(sprite);
     this.sprites.push(sprite);
   }
+
   destroy() {
     this.container.destroy();
   }

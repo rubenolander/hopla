@@ -20,20 +20,20 @@ export class Game {
   startGame() {
     App.run();
   }
+
   setBackground() {
     this.background = new Background();
     App.add(this.background.bg);
   }
+
   setFloor() {
-    new Floor();
+    this.floor = new Floor();
   }
 
-  createPlatform() {
-    const platforms = [];
-
+  createPlatform(posX, posY, width, height) {
     console.log(document.body.offsetWidth / 3);
-    const platform = new Platform(document.body.offsetWidth / 3, 800, 600, 30);
-    platforms.push(platform);
+    new Platform(document.body.offsetWidth / 3, 800, 600, 30);
+    new Platform(document.body.offsetWidth / 2, 500, 300, 30);
   }
 
   createPlayers() {
@@ -69,44 +69,8 @@ export class Game {
     function keysUp(e) {
       keys[e.keyCode] = false;
     }
+
     App.app.ticker.add(gameLoop.bind(this));
-    App.app.ticker.add(camera.bind(this));
-
-    function camera() {
-      //variables for calculating player position compared to center of screen.
-      const playerOneY = this.playerOne.body.position.y;
-      const playerTwoY = this.playerTwo.body.position.y;
-      const screenHeight = window.innerHeight;
-      const halfwayPoint = screenHeight / 2;
-
-      if (playerOneY < halfwayPoint || playerOneY < halfwayPoint) {
-        if (playerOneY < halfwayPoint) {
-          let centerDiff = playerOneY - halfwayPoint;
-          this.background.bg.y -= centerDiff;
-
-          Matter.Body.setPosition(this.playerOne.body, {
-            x: this.playerOne.body.position.x,
-            y: halfwayPoint,
-          });
-          Matter.Body.setPosition(this.playerTwo.body, {
-            x: this.playerTwo.body.position.x,
-            y: this.playerTwo.body.position.y,
-          });
-        }
-      } else if (playerTwoY < halfwayPoint) {
-        let centerDiff = playerTwoY - halfwayPoint;
-        this.background.bg.y -= centerDiff;
-
-        Matter.Body.setPosition(this.playerOne.body, {
-          x: this.playerOne.body.position.x,
-          y: this.playerOne.body.position.y,
-        });
-        Matter.Body.setPosition(this.playerTwo.body, {
-          x: this.playerTwo.body.position.x,
-          y: halfwayPoint,
-        });
-      }
-    }
 
     function gameLoop() {
       //Jumps
@@ -129,6 +93,48 @@ export class Game {
       }
       if (keys[movementKeyCodes.P2Right]) {
         this.playerTwo.move("right");
+      }
+
+      const playerOneY = this.playerOne.body.position.y;
+      const playerTwoY = this.playerTwo.body.position.y;
+      const screenHeight = window.innerHeight;
+      const halfwayPoint = screenHeight / 2;
+
+      if (playerOneY < halfwayPoint || playerOneY < halfwayPoint) {
+        if (playerOneY < halfwayPoint) {
+          let centerDiff = playerOneY - halfwayPoint;
+          this.background.bg.y -= centerDiff / 40;
+
+          Platform.platforms.forEach((platform) => {
+            platform.sprite.position.y -= centerDiff / 40;
+
+            // Update the Matter.js body position based on centerDiff
+            Matter.Body.setPosition(platform.body, {
+              x: platform.body.position.x,
+              y: platform.body.position.y - centerDiff / 40,
+            });
+          });
+          Matter.Body.setPosition(this.playerOne.body, {
+            x: this.playerOne.body.position.x,
+            y: halfwayPoint + centerDiff,
+          });
+        }
+      } else if (playerTwoY < halfwayPoint) {
+        let centerDiff = playerTwoY - halfwayPoint;
+        this.background.bg.y -= centerDiff / 40;
+        Platform.platforms.forEach((platform) => {
+          platform.sprite.position.y -= centerDiff / 40;
+
+          // Update the Matter.js body position based on centerDiff
+          Matter.Body.setPosition(platform.body, {
+            x: platform.body.position.x,
+            y: platform.body.position.y - centerDiff / 40,
+          });
+        });
+        Matter.Body.setPosition(this.playerTwo.body, {
+          x: this.playerTwo.body.position.x,
+          y: halfwayPoint + centerDiff,
+        });
       }
     }
   }
