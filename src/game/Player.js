@@ -52,7 +52,7 @@ export class Player {
     if (this.platform && this.jumpIndex < 1) {
       this.jumpIndex++;
       this.platform = null;
-      Matter.Body.setVelocity(this.body, { x: 0, y: -15 });
+      Matter.Body.setVelocity(this.body, { x: 0, y: -45 });
     }
   }
 

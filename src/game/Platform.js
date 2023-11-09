@@ -5,11 +5,11 @@ import * as PIXI from "pixi.js";
 export class Platform {
   static platforms = [];
   constructor(posX, posY, width, height) {
-    this.createSprite(posX, posY, width, height);
+    this.createPlatform(posX, posY, width, height);
     /* this.createBody(posX, posY, width, height); */
   }
 
-  createSprite(posX, posY, width, height) {
+  createPlatform(posX, posY, width, height) {
     this.texture = PIXI.Texture.from("/sprites/bulk.png");
 
     this.sprite = new PIXI.TilingSprite(this.texture, width, height);
@@ -17,9 +17,7 @@ export class Platform {
     this.sprite.position.x = posX;
 
     App.add(this.sprite);
-    /* }
 
-  createBody(posX, posY, width, height) { */
     this.body = Matter.Bodies.rectangle(posX + 300, posY, width, height, {
       isStatic: true,
       friction: 0,

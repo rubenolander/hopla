@@ -1,37 +1,54 @@
+import { App } from "./PixiApp";
 import * as PIXI from "pixi.js";
 
 export class Background {
   constructor() {
+    this.container = new PIXI.Container();
     this.createBackground();
   }
 
   createBackground() {
+    this.sprites = [];
+
+    for (let tiles = 0; tiles < 3; tiles++) {
+      this.createBackgroundSprite(tiles);
+    }
+  }
+
+  createBackgroundSprite(tiles) {
+    const sprite = PIXI.Sprite.from("../sprites/background.png");
+
     const gameWindow = document.querySelector(".game");
 
     const gameWidth = gameWindow.offsetWidth;
     const gameHeight = gameWindow.offsetHeight;
-
-    this.bg = PIXI.Sprite.from("../sprites/background.png");
-    this.bg.width = gameWindow.offsetWidth / 1.01;
-    this.bg.x = gameWidth - this.bg.width;
-    this.bg.height = gameHeight;
-    return this.bg;
-  }
-
-  createBgs() {
-    this.sprites = [];
-
-    for (let tiles = 0; tiles < 3; tiles++) {
-      this.createSprite(tiles);
-    }
-  }
-
-  createSprite(tiles) {
-    this.sprite = PIXI.Sprite.from("/sprites/background.png");
+    sprite.width = gameWidth / 1.01;
+    sprite.height = gameHeight;
+    sprite.x = gameWidth - sprite.width;
 
     sprite.y = sprite.height * tiles;
+    console.log(sprite.y);
+
     this.container.addChild(sprite);
     this.sprites.push(sprite);
+
+    App.add(this.container);
+  }
+
+  move(sprite, distance) {
+    const spriteDown = sprite.y - sprite.height;
+
+    if (spriteDown >= document.querySelector(".game").offsetHeight) {
+      // Only adjust the sprite position if it's below the screen boundary
+      sprite.y -= sprite.height * this.sprites.length;
+    }
+    sprite.y -= distance;
+  }
+
+  update(distance) {
+    this.sprites.forEach((sprite) => {
+      this.move(sprite, distance);
+    });
   }
 
   destroy() {

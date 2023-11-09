@@ -23,7 +23,6 @@ export class Game {
 
   setBackground() {
     this.background = new Background();
-    App.add(this.background.bg);
   }
 
   setFloor() {
@@ -31,9 +30,8 @@ export class Game {
   }
 
   createPlatform(posX, posY, width, height) {
-    console.log(document.body.offsetWidth / 3);
     new Platform(document.body.offsetWidth / 3, 800, 600, 30);
-    new Platform(document.body.offsetWidth / 2, 500, 300, 30);
+    new Platform(document.body.offsetWidth / 2, 650, 300, 30);
   }
 
   createPlayers() {
@@ -103,7 +101,7 @@ export class Game {
       if (playerOneY < halfwayPoint || playerOneY < halfwayPoint) {
         if (playerOneY < halfwayPoint) {
           let centerDiff = playerOneY - halfwayPoint;
-          this.background.bg.y -= centerDiff / 40;
+          this.background.update(centerDiff / 30);
 
           Platform.platforms.forEach((platform) => {
             platform.sprite.position.y -= centerDiff / 40;
@@ -121,7 +119,7 @@ export class Game {
         }
       } else if (playerTwoY < halfwayPoint) {
         let centerDiff = playerTwoY - halfwayPoint;
-        this.background.bg.y -= centerDiff / 40;
+        this.background.update(centerDiff / 30);
         Platform.platforms.forEach((platform) => {
           platform.sprite.position.y -= centerDiff / 40;
 
