@@ -27,7 +27,6 @@ export class Background {
     sprite.x = gameWidth - sprite.width;
 
     sprite.y = sprite.height * tiles;
-    console.log(sprite.y);
 
     this.container.addChild(sprite);
     this.sprites.push(sprite);

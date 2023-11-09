@@ -6,7 +6,6 @@ export class Platform {
   static platforms = [];
   constructor(posX, posY, width, height) {
     this.createPlatform(posX, posY, width, height);
-    /* this.createBody(posX, posY, width, height); */
   }
 
   createPlatform(posX, posY, width, height) {
@@ -18,7 +17,7 @@ export class Platform {
 
     App.add(this.sprite);
 
-    this.body = Matter.Bodies.rectangle(posX + 300, posY, width, height, {
+    this.body = Matter.Bodies.rectangle(posX + posX / 2, posY, width, height, {
       isStatic: true,
       friction: 0,
     });

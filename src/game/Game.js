@@ -29,20 +29,34 @@ export class Game {
     this.floor = new Floor();
   }
 
-  createPlatform(posX, posY, width, height) {
-    new Platform(document.body.offsetWidth / 3, 800, 600, 30);
-    new Platform(document.body.offsetWidth / 2, 650, 300, 30);
+  createPlatform() {
+    new Platform(
+      document.body.offsetWidth / 3,
+      document.body.offsetHeight - document.body.offsetHeight / 6,
+      600,
+      document.body.offsetHeight / 30
+    );
+    new Platform(
+      document.body.offsetWidth / 2,
+      document.body.offsetHeight - document.body.offsetHeight / 3.5,
+      300,
+      document.body.offsetHeight / 30
+    );
   }
 
   createPlayers() {
     this.playerOne = new Player(
       document.body.offsetWidth / 4,
       document.body.offsetHeight - 100,
+      document.body.offsetHeight / 30,
+      document.body.offsetHeight / 30,
       "ostrich"
     );
     this.playerTwo = new Player(
       (document.body.offsetWidth * 2) / 3,
       document.body.offsetHeight - 65,
+      document.body.offsetHeight / 30,
+      document.body.offsetHeight / 30,
       "other"
     );
   }
@@ -71,6 +85,8 @@ export class Game {
     App.app.ticker.add(gameLoop.bind(this));
 
     function gameLoop() {
+      this.playerOne.update();
+      this.playerTwo.update();
       //Jumps
       if (keys[movementKeyCodes.P1Jump]) {
         this.playerOne.jump();
@@ -121,12 +137,12 @@ export class Game {
         let centerDiff = playerTwoY - halfwayPoint;
         this.background.update(centerDiff / 30);
         Platform.platforms.forEach((platform) => {
-          platform.sprite.position.y -= centerDiff / 40;
+          platform.sprite.position.y -= centerDiff / 50;
 
           // Update the Matter.js body position based on centerDiff
           Matter.Body.setPosition(platform.body, {
             x: platform.body.position.x,
-            y: platform.body.position.y - centerDiff / 40,
+            y: platform.body.position.y - centerDiff / 50,
           });
         });
         Matter.Body.setPosition(this.playerTwo.body, {
