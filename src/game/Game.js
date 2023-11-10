@@ -30,18 +30,16 @@ export class Game {
   }
 
   createPlatform() {
-    new Platform(
+    console.log(
       document.body.offsetWidth / 3,
       document.body.offsetHeight - document.body.offsetHeight / 6,
       600,
       document.body.offsetHeight / 30
     );
-    new Platform(
-      document.body.offsetWidth / 2,
-      document.body.offsetHeight - document.body.offsetHeight / 3.5,
-      300,
-      document.body.offsetHeight / 30
-    );
+    //THIS HAS BROKEN. I NEED A WAY TO ADD EACH INSTANCE SO THAT EVERY PLATFORM MOVES DOWNWARD
+    new Platform(500, 600, 100, 30);
+    new Platform(400, 500, 100, 30);
+    new Platform(300, 400, 100, 30);
   }
 
   createPlayers() {
@@ -116,38 +114,21 @@ export class Game {
 
       if (playerOneY < halfwayPoint || playerOneY < halfwayPoint) {
         if (playerOneY < halfwayPoint) {
-          let centerDiff = playerOneY - halfwayPoint;
-          this.background.update(centerDiff / 30);
-
-          Platform.platforms.forEach((platform) => {
-            platform.sprite.position.y -= centerDiff / 40;
-
-            // Update the Matter.js body position based on centerDiff
-            Matter.Body.setPosition(platform.body, {
-              x: platform.body.position.x,
-              y: platform.body.position.y - centerDiff / 40,
-            });
-          });
+          let heightDifference = playerOneY - halfwayPoint;
+          this.background.update(heightDifference / 30);
+          this.platform.update(heightDifference / 50);
           Matter.Body.setPosition(this.playerOne.body, {
             x: this.playerOne.body.position.x,
-            y: halfwayPoint + centerDiff,
+            y: halfwayPoint + heightDifference,
           });
         }
       } else if (playerTwoY < halfwayPoint) {
-        let centerDiff = playerTwoY - halfwayPoint;
-        this.background.update(centerDiff / 30);
-        Platform.platforms.forEach((platform) => {
-          platform.sprite.position.y -= centerDiff / 50;
-
-          // Update the Matter.js body position based on centerDiff
-          Matter.Body.setPosition(platform.body, {
-            x: platform.body.position.x,
-            y: platform.body.position.y - centerDiff / 50,
-          });
-        });
+        let heightDifference = playerTwoY - halfwayPoint;
+        this.background.update(heightDifference / 30);
+        this.platform.update(heightDifference / 50);
         Matter.Body.setPosition(this.playerTwo.body, {
           x: this.playerTwo.body.position.x,
-          y: halfwayPoint + centerDiff,
+          y: halfwayPoint + heightDifference,
         });
       }
     }
@@ -168,9 +149,9 @@ export class Game {
     const playerTwo = colliders.find((body) => body.bodyName === "other");
 
     if (platform) {
-      if (playerOne && playerOne.velocity.y >= 0) {
+      if (playerOne && playerOne.velocity.y > 0) {
         this.playerOne.onGround(platform.gamePlatform);
-      } else if (playerTwo && playerTwo.velocity.y >= 0) {
+      } else if (playerTwo && playerTwo.velocity.y > 0) {
         this.playerTwo.onGround(platform.gamePlatform);
       }
     }

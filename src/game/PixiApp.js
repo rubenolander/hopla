@@ -5,7 +5,7 @@ class Application {
   run() {
     this.app = new PIXI.Application({
       autoResize: true,
-      resizeTo: document.querySelector(".game"),
+      resizeTo: window,
     });
     document.querySelector(".game").appendChild(this.app.view);
 

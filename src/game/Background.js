@@ -19,9 +19,9 @@ export class Background {
     const sprite = PIXI.Sprite.from("../sprites/background.png");
 
     const gameWindow = document.querySelector(".game");
-
     const gameWidth = gameWindow.offsetWidth;
     const gameHeight = gameWindow.offsetHeight;
+
     sprite.width = gameWidth / 1.01;
     sprite.height = gameHeight;
     sprite.x = gameWidth - sprite.width;
@@ -38,7 +38,6 @@ export class Background {
     const spriteDown = sprite.y - sprite.height;
 
     if (spriteDown >= document.querySelector(".game").offsetHeight) {
-      // Only adjust the sprite position if it's below the screen boundary
       sprite.y -= sprite.height * this.sprites.length;
     }
     sprite.y -= distance;

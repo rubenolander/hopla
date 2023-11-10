@@ -86,37 +86,41 @@ export class Player {
 
   jump() {
     if (this.platform && this.jumpIndex < 1) {
+      this.isJumping = true;
       this.sprite.textures = [this.spriteJump];
       this.sprite.stop();
-      this.isJumping = true;
       this.jumpIndex++;
       this.platform = null;
       Matter.Body.setVelocity(this.body, {
         x: 0,
-        y: -(document.body.offsetHeight / 60),
+        y: -(document.body.offsetHeight / 30),
       });
+
+      //Sound
       new Audio("/sounds/jump.wav").play();
     }
   }
 
   idle() {
-    this.sprite.texture = this.spriteIdle;
+    this.sprite.textures = [this.spriteIdle];
     this.sprite.stop();
   }
 
   onGround(platform) {
-    this.sprite.texture = this.spriteIdle;
+    this.sprite.textures = [this.spriteIdle];
     this.platform = platform;
     this.jumpIndex = 0;
     this.isJumping = false;
     this.sprite.stop();
-    this.fallArray = [];
+
+    //Sound
+    this.fallSounds = [];
     for (let i = 1; i < 4; i++) {
       var fallSound = `/sounds/fall${i}.wav`;
-      this.fallArray.push(fallSound);
+      this.fallSounds.push(fallSound);
     }
     var sound =
-      this.fallArray[Math.floor(Math.random() * this.fallArray.length)];
+      this.fallSounds[Math.floor(Math.random() * this.fallSounds.length)];
     new Audio(sound).play();
   }
 
