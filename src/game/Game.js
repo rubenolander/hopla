@@ -32,9 +32,9 @@ export class Game {
   createPlatforms() {
     new Platforms(600, 300, 64, 32);
     new Platforms(500, 400, 64, 32);
-    new Platforms(400, 520, 100, 32);
+    new Platforms(400, 620, 100, 32);
 
-    this.platforms = new Platforms(320, 600, 100, 32);
+    this.platforms = new Platforms();
   }
 
   createPlayers() {

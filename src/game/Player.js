@@ -9,17 +9,10 @@ export class Player {
   }
 
   getSprites(spriteType) {
-    if (spriteType === "ostrich") {
-      this.spriteLeft = PIXI.Texture.from(`../sprites/${spriteType}Left.png`);
-      this.spriteRight = PIXI.Texture.from(`../sprites/${spriteType}Right.png`);
-      this.spriteIdle = PIXI.Texture.from(`../sprites/${spriteType}Idle.png`);
-      this.spriteJump = PIXI.Texture.from(`../sprites/${spriteType}Jump.png`);
-    } else if (spriteType === "dodo") {
-      this.spriteLeft = PIXI.Texture.from(`../sprites/${spriteType}Left.png`);
-      this.spriteRight = PIXI.Texture.from(`../sprites/${spriteType}Right.png`);
-      this.spriteIdle = PIXI.Texture.from(`../sprites/${spriteType}Idle.png`);
-      this.spriteJump = PIXI.Texture.from(`../sprites/${spriteType}Jump.png`);
-    }
+    this.spriteLeft = PIXI.Texture.from(`../sprites/${spriteType}Left.png`);
+    this.spriteRight = PIXI.Texture.from(`../sprites/${spriteType}Right.png`);
+    this.spriteIdle = PIXI.Texture.from(`../sprites/${spriteType}Idle.png`);
+    this.spriteJump = PIXI.Texture.from(`../sprites/${spriteType}Jump.png`);
     return this;
   }
 
@@ -28,8 +21,19 @@ export class Player {
       collisionFilter: { category: 0x0002 },
       friction: 0,
       isStatic: false,
+      angle: 0,
       bodyName: character,
-      frictionAir: 0.04,
+      frictionAir: 0.03,
+      plugin: {
+        wrap: {
+          min: {
+            x: 0,
+          },
+          max: {
+            x: document.querySelector("canvas").offsetWidth,
+          },
+        },
+      },
     });
     Matter.World.add(App.physics.world, this.body);
     /* this.body.player = this; */

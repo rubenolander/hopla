@@ -1,4 +1,5 @@
 import Matter from "matter-js";
+import MatterWrap from "matter-wrap";
 import * as PIXI from "pixi.js";
 
 class Application {
@@ -14,6 +15,8 @@ class Application {
 
   createPhysics() {
     this.physics = Matter.Engine.create();
+    Matter.use(MatterWrap);
+
     this.physics.gravity.y = 0.9;
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, this.physics);

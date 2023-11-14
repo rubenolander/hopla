@@ -1,11 +1,20 @@
 import { App } from "./PixiApp";
+import { Platforms } from "./Platforms";
 import Matter from "matter-js";
 import * as PIXI from "pixi.js";
 
 export class Floor {
   constructor() {
-    this.createSprite();
-    this.createBody();
+    this.floor = new Platforms(
+      App.app.screen.width / 2,
+      App.app.screen.height,
+      document.querySelector(".game").offsetWidth,
+      30
+    );
+    console.log(document.querySelector(".game").offsetWidth);
+
+    /*     this.createSprite();
+    this.createBody(); */
   }
 
   createSprite() {

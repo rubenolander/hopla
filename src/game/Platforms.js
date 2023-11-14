@@ -9,7 +9,7 @@ export class Platforms {
   }
 
   get platformData() {
-    this.spriteWidth = PIXI.Texture.from("/sprites/bulk.png").width;
+    this.spriteWidth = PIXI.Texture.from("/sprites/girder.png").width * 64;
     let limits = {
       width: { min: this.spriteWidth * 2, max: this.spriteWidth * 8 },
       height: 2,
@@ -20,12 +20,10 @@ export class Platforms {
 
   createPlatform(posX, posY, width, height) {
     this.texture = PIXI.Texture.from("/sprites/girder.png");
-
+    console.log(posX, posY, width, height);
     this.sprite = new PIXI.TilingSprite(this.texture, width, height);
     this.sprite.position.x = posX - width / 2;
-    this.sprite.position.y = posY - height + 5;
-
-    App.add(this.sprite);
+    this.sprite.position.y = posY - height / 2;
 
     this.body = Matter.Bodies.rectangle(posX, posY, width, height, {
       isStatic: true,
@@ -33,8 +31,10 @@ export class Platforms {
     });
     this.body.gamePlatform = this;
     const platformObject = { sprite: this.sprite, body: this.body };
+
     Platforms.platforms.push(platformObject);
     Matter.World.add(App.physics.world, this.body);
+    App.add(this.sprite);
   }
 
   move(platform, number) {
