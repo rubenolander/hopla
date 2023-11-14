@@ -5,7 +5,7 @@ class Application {
   run() {
     this.app = new PIXI.Application({
       autoResize: true,
-      resizeTo: window,
+      resizeTo: document.querySelector(".game"),
     });
     document.querySelector(".game").appendChild(this.app.view);
 
@@ -14,8 +14,20 @@ class Application {
 
   createPhysics() {
     this.physics = Matter.Engine.create();
+    this.physics.gravity.y = 0.9;
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, this.physics);
+
+    const delta = 1000 / 60;
+    const subSteps = 3;
+    const subDelta = delta / subSteps;
+
+    (function run() {
+      window.requestAnimationFrame(run);
+      for (let i = 0; i < subSteps; i += 1) {
+        Matter.Engine.update(App.physics, subDelta);
+      }
+    })();
   }
 
   add(item) {

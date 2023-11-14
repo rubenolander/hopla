@@ -6,60 +6,46 @@ export class Player {
   constructor(posX, posY, width, height, character) {
     this.createBody(posX, posY, width, height, character);
     this.createSprite(posX, posY, width, height, character);
-    this.isJumping = false;
   }
 
-  getSprites() {
-    this.spriteLeft = PIXI.Texture.from("../sprites/ostrichLeft.png");
-    this.spriteRight = PIXI.Texture.from("../sprites/ostrichRight.png");
-    this.spriteIdle = PIXI.Texture.from("../sprites/ostrichIdle.png");
-    this.spriteJump = PIXI.Texture.from("../sprites/ostrichJump.png");
-
-    this.images = ["../sprites/ostrichLeft.png", "../sprites/ostrichRight.png"];
-
-    this.imagesArray = [];
-
-    for (let i = 0; i < 2; i++) {
-      this.texture = PIXI.Texture.from(this.images[i]);
-      this.imagesArray.push(this.texture);
+  getSprites(spriteType) {
+    if (spriteType === "ostrich") {
+      this.spriteLeft = PIXI.Texture.from(`../sprites/${spriteType}Left.png`);
+      this.spriteRight = PIXI.Texture.from(`../sprites/${spriteType}Right.png`);
+      this.spriteIdle = PIXI.Texture.from(`../sprites/${spriteType}Idle.png`);
+      this.spriteJump = PIXI.Texture.from(`../sprites/${spriteType}Jump.png`);
+    } else if (spriteType === "dodo") {
+      this.spriteLeft = PIXI.Texture.from(`../sprites/${spriteType}Left.png`);
+      this.spriteRight = PIXI.Texture.from(`../sprites/${spriteType}Right.png`);
+      this.spriteIdle = PIXI.Texture.from(`../sprites/${spriteType}Idle.png`);
+      this.spriteJump = PIXI.Texture.from(`../sprites/${spriteType}Jump.png`);
     }
-
-    this.animatedOstrich = new PIXI.AnimatedSprite(this.imagesArray);
-    this.spriteRun = new PIXI.AnimatedSprite([
-      this.spriteLeft,
-      this.spriteRight,
-    ]);
-    this.spriteRun.loop = true;
-    this.spriteRun.animationSpeed = 0.1;
-    this.spriteRun.anchor.set(0.5);
+    return this;
   }
 
   createBody(posX, posY, width, height, character) {
     this.body = Matter.Bodies.rectangle(posX, posY, width, height, {
-      collisionFilter: { category: 0x0001 },
+      collisionFilter: { category: 0x0002 },
       friction: 0,
       isStatic: false,
       bodyName: character,
       frictionAir: 0.04,
     });
     Matter.World.add(App.physics.world, this.body);
-    this.body.player = this;
+    /* this.body.player = this; */
   }
 
   createSprite(posX, posY, width, height, character) {
-    this.getSprites();
-    if (character === "ostrich") {
-      this.sprite = new PIXI.AnimatedSprite([this.spriteIdle]);
-    } else if (character === "other") {
-      this.sprite = new PIXI.AnimatedSprite([this.spriteJump]);
-    }
+    this.getSprites("ostrich");
+    this.sprite = new PIXI.AnimatedSprite([this.spriteIdle]);
+    this.sprite = new PIXI.AnimatedSprite([this.spriteJump]);
     this.sprite.loop = true;
     this.sprite.animationSpeed = 0.1;
     this.sprite.x = posX;
     this.sprite.y = posY;
-    this.sprite.width = width;
-    this.sprite.height = height;
-    this.sprite.anchor.set(0.5, 0.5);
+    this.sprite.width = width / 2;
+    this.sprite.height = height / 2;
+    this.sprite.anchor.set(0.5, 0.2);
     App.add(this.sprite);
   }
 
@@ -76,28 +62,27 @@ export class Player {
       this.sprite.play();
     }
     if (direction === "left") {
-      this.body.position.x -= 0.5;
+      this.body.position.x -= 0.15;
       this.sprite.scale.x = -1;
     } else if (direction === "right") {
-      this.body.position.x += 0.5;
+      this.body.position.x += 0.15;
       this.sprite.scale.x = 1;
     }
   }
 
   jump() {
     if (this.platform && this.jumpIndex < 1) {
-      this.isJumping = true;
       this.sprite.textures = [this.spriteJump];
       this.sprite.stop();
       this.jumpIndex++;
       this.platform = null;
       Matter.Body.setVelocity(this.body, {
         x: 0,
-        y: -(document.body.offsetHeight / 30),
+        y: -(document.body.offsetHeight / 50),
       });
 
       //Sound
-      new Audio("/sounds/jump.wav").play();
+      /* new Audio("/sounds/jump.wav").play(); */
     }
   }
 
@@ -109,19 +94,21 @@ export class Player {
   onGround(platform) {
     this.sprite.textures = [this.spriteIdle];
     this.platform = platform;
+    if (this.sprite.position.y > this.platform.body.position.y) {
+      this.sprite.position.y =
+        this.platform.body.position.y - this.sprite.height / 2;
+    }
     this.jumpIndex = 0;
-    this.isJumping = false;
     this.sprite.stop();
-
     //Sound
-    this.fallSounds = [];
+    /* this.fallSounds = [];
     for (let i = 1; i < 4; i++) {
       var fallSound = `/sounds/fall${i}.wav`;
       this.fallSounds.push(fallSound);
     }
     var sound =
       this.fallSounds[Math.floor(Math.random() * this.fallSounds.length)];
-    new Audio(sound).play();
+    new Audio(sound).play(); */
   }
 
   update() {

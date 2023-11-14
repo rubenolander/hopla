@@ -3,7 +3,7 @@ import Matter from "matter-js";
 import { App } from "./PixiApp";
 import { Background } from "./Background";
 import { Floor } from "./Floor";
-import { Platform } from "./Platform";
+import { Platforms } from "./Platforms";
 import { Player } from "./Player";
 
 export class Game {
@@ -14,7 +14,7 @@ export class Game {
     this.createPlayers();
     this.setEvents();
     this.setGameLoopAndCamera();
-    this.createPlatform();
+    this.createPlatforms();
   }
 
   startGame() {
@@ -29,32 +29,28 @@ export class Game {
     this.floor = new Floor();
   }
 
-  createPlatform() {
-    console.log(
-      document.body.offsetWidth / 3,
-      document.body.offsetHeight - document.body.offsetHeight / 6,
-      600,
-      document.body.offsetHeight / 30
-    );
-    //THIS HAS BROKEN. I NEED A WAY TO ADD EACH INSTANCE SO THAT EVERY PLATFORM MOVES DOWNWARD
-    new Platform(500, 600, 100, 30);
-    new Platform(400, 500, 100, 30);
-    new Platform(300, 400, 100, 30);
+  createPlatforms() {
+    new Platforms(600, 300, 64, 32);
+    new Platforms(500, 400, 64, 32);
+    new Platforms(400, 520, 100, 32);
+
+    this.platforms = new Platforms(320, 600, 100, 32);
   }
 
   createPlayers() {
+    console.log((document.body.offsetHeight / 30) * 2);
     this.playerOne = new Player(
       document.body.offsetWidth / 4,
-      document.body.offsetHeight - 100,
-      document.body.offsetHeight / 30,
-      document.body.offsetHeight / 30,
+      document.body.offsetHeight - 110,
+      (document.body.offsetHeight / 30) * 2,
+      (document.body.offsetHeight / 30) * 2,
       "ostrich"
     );
     this.playerTwo = new Player(
       (document.body.offsetWidth * 2) / 3,
-      document.body.offsetHeight - 65,
-      document.body.offsetHeight / 30,
-      document.body.offsetHeight / 30,
+      document.body.offsetHeight - 150,
+      (document.body.offsetHeight / 30) * 2,
+      (document.body.offsetHeight / 30) * 2,
       "other"
     );
   }
@@ -116,7 +112,7 @@ export class Game {
         if (playerOneY < halfwayPoint) {
           let heightDifference = playerOneY - halfwayPoint;
           this.background.update(heightDifference / 30);
-          this.platform.update(heightDifference / 50);
+          this.platforms.update(heightDifference / 50);
           Matter.Body.setPosition(this.playerOne.body, {
             x: this.playerOne.body.position.x,
             y: halfwayPoint + heightDifference,
@@ -125,7 +121,7 @@ export class Game {
       } else if (playerTwoY < halfwayPoint) {
         let heightDifference = playerTwoY - halfwayPoint;
         this.background.update(heightDifference / 30);
-        this.platform.update(heightDifference / 50);
+        this.platforms.update(heightDifference / 50);
         Matter.Body.setPosition(this.playerTwo.body, {
           x: this.playerTwo.body.position.x,
           y: halfwayPoint + heightDifference,
