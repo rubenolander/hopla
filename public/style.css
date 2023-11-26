@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "2p";
+  src: url("../public/fonts/PressStart2P-Regular.ttf");
+}
+
 body {
   height: 100vh;
   margin: 0;
@@ -10,10 +15,20 @@ body {
   width: 100%;
   min-width: 1000px;
 }
+button {
+  font-family: "2p";
+  height: 100%;
+  width: 100%;
+  font-size: 2rem;
+  align-self: center;
+  color: white;
+  background-color: chocolate;
+}
 
 canvas {
   display: block;
   max-width: inherit;
+  font-family: "2p";
 }
 @media screen and (min-height: 960px) {
   html {

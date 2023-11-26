@@ -34,18 +34,18 @@ export class Background {
     App.add(this.container);
   }
 
-  move(sprite, distance) {
+  move(sprite, offset) {
     const spriteDown = sprite.y - sprite.height;
 
     if (spriteDown >= document.querySelector(".game").offsetHeight) {
       sprite.y -= sprite.height * this.sprites.length;
     }
-    sprite.y -= distance;
+    sprite.y -= offset;
   }
 
-  update(distance) {
+  update(offset) {
     this.sprites.forEach((sprite) => {
-      this.move(sprite, distance);
+      this.move(sprite, offset);
     });
   }
 
