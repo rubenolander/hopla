@@ -19,11 +19,11 @@ export class Player {
   createBody = async (posX, posY, width, height, character) => {
     this.body = Matter.Bodies.rectangle(posX, posY, width / 4, height / 4, {
       collisionFilter: { category: 0x0002 },
-      friction: 0.1,
+      friction: 0.125,
       isStatic: false,
       angle: 0,
       bodyName: character,
-      frictionAir: 0.05,
+      frictionAir: 0.0555,
       plugin: {
         wrap: {
           min: {
@@ -37,7 +37,7 @@ export class Player {
     });
     setTimeout(() => {
       Matter.World.add(App.physics.world, this.body);
-    }, 1000);
+    }, 500);
   };
 
   createSprite(posX, posY, width, height, character) {

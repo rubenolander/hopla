@@ -1,4 +1,4 @@
-import { Text, Assets } from "pixi.js";
+import { Text } from "pixi.js";
 import Matter from "matter-js";
 import { App } from "./Application";
 import { Background } from "./Background";
@@ -8,6 +8,10 @@ import { Player } from "./Player";
 
 export class Game {
   constructor() {
+    this.init();
+  }
+
+  init() {
     this.startGame();
     this.setBackground();
     this.setTexts();
@@ -71,7 +75,7 @@ export class Game {
   endGame(player) {
     const style = {
       fontFamily: "2p",
-      fontSize: 24,
+      fontSize: 70,
       align: "center",
       fill: 0xffffff,
     };
@@ -79,7 +83,6 @@ export class Game {
       text: `${player.body.bodyName} wins!`,
       style,
     });
-    gameOverText.style.fontSize = 70;
     gameOverText.x = document.body.offsetWidth / 2 - gameOverText.width / 2;
     gameOverText.y = document.body.offsetHeight / 2;
 
@@ -94,6 +97,15 @@ export class Game {
     App.add(gameOverText);
     App.add(restartText);
   }
+
+  resetGame() {
+    this.remove(this.playerOne.sprite);
+    this.remove(this.playerTwo.sprite);
+    Matter.World(this.physics.world, this.playerOne.body);
+    Matter.World(this.physics.world, this.playerTwo.body);
+    this.app.stage.removeChildren();
+  }
+
   setGameLoopAndCamera() {
     setTimeout(() => {
       let keys = {};
@@ -152,13 +164,12 @@ export class Game {
 
         const playerOneY = this.playerOne.body.position.y;
         const playerTwoY = this.playerTwo.body.position.y;
-        const screenHeight = window.innerHeight;
+        const screenHeight = document.querySelector(".game").offsetHeight;
         const halfwayPoint = screenHeight / 2;
-        /* if(playerOneY > screenHeight+this.playerOne.body.height) */
-        if (playerOneY > screenHeight) {
+        if (playerOneY > screenHeight + 75) {
           gameOver = true;
           this.endGame(this.playerTwo);
-        } else if (playerTwoY > screenHeight) {
+        } else if (playerTwoY > screenHeight + 75) {
           gameOver = true;
           this.endGame(this.playerOne);
         }
@@ -167,8 +178,8 @@ export class Game {
           if (playerOneY < halfwayPoint) {
             let heightDifference = playerOneY - halfwayPoint;
             this.background.update(heightDifference / 30);
-            this.platforms.update(heightDifference / 50);
-            this.texts.move(heightDifference / 50);
+            this.platforms.update(heightDifference / 48);
+            this.texts.move(heightDifference / 48);
             Matter.Body.setPosition(this.playerOne.body, {
               x: this.playerOne.body.position.x,
               y: halfwayPoint + heightDifference,
@@ -177,15 +188,15 @@ export class Game {
         } else if (playerTwoY < halfwayPoint) {
           let heightDifference = playerTwoY - halfwayPoint;
           this.background.update(heightDifference / 30);
-          this.platforms.update(heightDifference / 50);
-          this.texts.move(heightDifference / 50);
+          this.platforms.update(heightDifference / 48);
+          this.texts.move(heightDifference / 48);
           Matter.Body.setPosition(this.playerTwo.body, {
             x: this.playerTwo.body.position.x,
             y: halfwayPoint + heightDifference,
           });
         }
       }
-    }, 1300);
+    }, 500);
   }
 
   setEvents() {
@@ -195,14 +206,14 @@ export class Game {
         "collisionStart",
         this.onCollisionStart.bind(this)
       );
-    }, 1100);
+    }, 500);
   }
 
   onCollisionStart(e) {
     const colliders = [e.pairs[0].bodyA, e.pairs[0].bodyB];
     const playerOne = colliders.find((body) => body.bodyName === "ostrich");
     const platform = colliders.find((body) => body.gamePlatform);
-    const playerTwo = colliders.find((body) => body.bodyName === "other");
+    const playerTwo = colliders.find((body) => body.bodyName === "dodo");
 
     if (platform) {
       if (playerOne && playerOne.velocity.y > 0) {

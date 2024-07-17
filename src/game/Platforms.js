@@ -27,7 +27,7 @@ export class Platforms {
       Matter.World.add(App.physics.world, this.body);
       App.add(this.sprite);
       this.hasExitedScreen = false;
-    }, 800);
+    }, 500);
   }
 
   createFloor() {
