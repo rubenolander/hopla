@@ -1,9 +1,9 @@
-import { App } from "./PixiApp";
-import * as PIXI from "pixi.js";
+import { App } from "./Application";
+import { Container, Sprite, Assets } from "pixi.js";
 
 export class Background {
   constructor() {
-    this.container = new PIXI.Container();
+    this.container = new Container();
     this.createBackground();
   }
 
@@ -15,14 +15,14 @@ export class Background {
     }
   }
 
-  createBackgroundSprite(tiles) {
-    const sprite = PIXI.Sprite.from("../sprites/background.png");
+  async createBackgroundSprite(tiles) {
+    const sprite = Sprite.from("../sprites/background.png");
 
     const gameWindow = document.querySelector(".game");
     const gameWidth = gameWindow.offsetWidth;
     const gameHeight = gameWindow.offsetHeight;
 
-    sprite.width = gameWidth / 1.01;
+    sprite.width = gameWidth / 1.0;
     sprite.height = gameHeight;
     sprite.x = gameWidth - sprite.width;
 

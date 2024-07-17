@@ -1,38 +1,39 @@
-import { App } from "./PixiApp";
+import { App } from "./Application";
 import Matter from "matter-js";
-import * as PIXI from "pixi.js";
+import { Texture, TilingSprite } from "pixi.js";
 
 export class Platforms {
   static platforms = [];
 
   createPlatform(posX, posY, width, height) {
-    this.texture = PIXI.Texture.from("/sprites/girder.png");
-    this.sprite = new PIXI.TilingSprite(this.texture, width, height);
-    this.sprite.position.x = posX - width / 2;
-    this.sprite.position.y = posY - height / 2;
+    setTimeout(() => {
+      this.texture = Texture.from("../sprites/girder.png");
+      this.sprite = new TilingSprite({
+        texture: this.texture,
+        width: width,
+        height: height,
+      });
+      this.sprite.position.x = posX - width / 2;
+      this.sprite.position.y = posY - height / 2;
 
-    this.body = Matter.Bodies.rectangle(posX, posY, width, height, {
-      isStatic: true,
-      friction: 0,
-    });
+      this.body = Matter.Bodies.rectangle(posX, posY, width, height, {
+        isStatic: true,
+        friction: 0,
+      });
 
-    this.body.gamePlatform = this;
-    const platformObject = { sprite: this.sprite, body: this.body };
-    Platforms.platforms.push(platformObject);
-    Matter.World.add(App.physics.world, this.body);
-    App.add(this.sprite);
-    this.hasExitedScreen = false;
+      this.body.gamePlatform = this;
+      const platformObject = { sprite: this.sprite, body: this.body };
+      Platforms.platforms.push(platformObject);
+      Matter.World.add(App.physics.world, this.body);
+      App.add(this.sprite);
+      this.hasExitedScreen = false;
+    }, 800);
   }
 
   createFloor() {
     let gameWidth = document.querySelector(".game").offsetWidth;
-    let gameHeight = App.app.screen.height;
-    this.floor = this.createPlatform(
-      App.app.screen.width / 2,
-      gameHeight,
-      gameWidth,
-      30
-    );
+    let gameHeight = document.querySelector(".game").offsetHeight;
+    this.floor = this.createPlatform(gameWidth / 2, gameHeight, gameWidth, 30);
     this.leftWall = this.createPlatform(gameWidth, gameHeight - 40, 64, 200);
 
     this.rightWall = this.createPlatform(0, gameHeight - 40, 64, 200);
@@ -40,7 +41,7 @@ export class Platforms {
 
   createStarterPlatforms() {
     let gameWidth = document.querySelector(".game").offsetWidth;
-    let gameHeight = App.app.screen.height;
+    let gameHeight = document.querySelector(".game").offsetHeight;
 
     setTimeout(() => {
       this.createPlatform(

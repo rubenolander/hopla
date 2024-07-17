@@ -1,6 +1,6 @@
-import { App } from "./PixiApp";
+import { App } from "./Application";
 import Matter from "matter-js";
-import * as PIXI from "pixi.js";
+import { Texture, AnimatedSprite } from "pixi.js";
 
 export class Player {
   constructor(posX, posY, width, height, character) {
@@ -9,14 +9,14 @@ export class Player {
   }
 
   getSprites(spriteType) {
-    this.spriteLeft = PIXI.Texture.from(`../sprites/${spriteType}Left.png`);
-    this.spriteRight = PIXI.Texture.from(`../sprites/${spriteType}Right.png`);
-    this.spriteIdle = PIXI.Texture.from(`../sprites/${spriteType}Idle.png`);
-    this.spriteJump = PIXI.Texture.from(`../sprites/${spriteType}Jump.png`);
+    this.spriteLeft = Texture.from(`../sprites/${spriteType}Left.png`);
+    this.spriteRight = Texture.from(`../sprites/${spriteType}Right.png`);
+    this.spriteIdle = Texture.from(`../sprites/${spriteType}Idle.png`);
+    this.spriteJump = Texture.from(`../sprites/${spriteType}Jump.png`);
     return this;
   }
 
-  createBody(posX, posY, width, height, character) {
+  createBody = async (posX, posY, width, height, character) => {
     this.body = Matter.Bodies.rectangle(posX, posY, width / 4, height / 4, {
       collisionFilter: { category: 0x0002 },
       friction: 0.1,
@@ -30,18 +30,20 @@ export class Player {
             x: 0,
           },
           max: {
-            x: document.querySelector("canvas").offsetWidth,
+            x: document.querySelector(".game").offsetWidth,
           },
         },
       },
     });
-    Matter.World.add(App.physics.world, this.body);
-  }
+    setTimeout(() => {
+      Matter.World.add(App.physics.world, this.body);
+    }, 1000);
+  };
 
   createSprite(posX, posY, width, height, character) {
-    this.getSprites("ostrich");
-    this.sprite = new PIXI.AnimatedSprite([this.spriteIdle]);
-    this.sprite = new PIXI.AnimatedSprite([this.spriteJump]);
+    this.getSprites(character);
+    this.sprite = new AnimatedSprite([this.spriteIdle]);
+    this.sprite = new AnimatedSprite([this.spriteJump]);
     this.sprite.loop = true;
     this.sprite.animationSpeed = 0.1;
     this.sprite.x = posX;
