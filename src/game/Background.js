@@ -1,5 +1,5 @@
 import { App } from "./Application";
-import { Container, Sprite, Assets } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 
 export class Background {
   constructor() {
@@ -13,31 +13,26 @@ export class Background {
     for (let tiles = 0; tiles < 3; tiles++) {
       this.createBackgroundSprite(tiles);
     }
+    App.add(this.container);
   }
 
-  async createBackgroundSprite(tiles) {
+  createBackgroundSprite(tiles) {
     const sprite = Sprite.from("../sprites/background.png");
 
-    const gameWindow = document.querySelector(".game");
-    const gameWidth = gameWindow.offsetWidth;
-    const gameHeight = gameWindow.offsetHeight;
-
-    sprite.width = gameWidth / 1.0;
-    sprite.height = gameHeight;
-    sprite.x = gameWidth - sprite.width;
+    sprite.width = App.gameWidth;
+    sprite.height = App.gameHeight;
+    sprite.x = App.gameWidth - sprite.width;
 
     sprite.y = sprite.height * tiles;
 
     this.container.addChild(sprite);
     this.sprites.push(sprite);
-
-    App.add(this.container);
   }
 
   move(sprite, offset) {
     const spriteDown = sprite.y - sprite.height;
 
-    if (spriteDown >= document.querySelector(".game").offsetHeight) {
+    if (spriteDown >= App.gameHeight) {
       sprite.y -= sprite.height * this.sprites.length;
     }
     sprite.y -= offset;

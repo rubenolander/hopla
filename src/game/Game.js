@@ -15,10 +15,10 @@ export class Game {
     this.startGame();
     this.setBackground();
     this.setTexts();
+    this.createPlatforms();
     this.createPlayers();
     this.setEvents();
     this.setGameLoopAndCamera();
-    this.createPlatforms();
   }
 
   startGame() {
@@ -41,31 +41,33 @@ export class Game {
 
   createPlayers() {
     this.playerOne = new Player(
-      document.body.offsetWidth / 4,
-      document.body.offsetHeight - 110,
-      (document.body.offsetHeight / 30) * 1,
-      (document.body.offsetHeight / 30) * 1,
+      App.gameWidth / 4,
+      App.gameHeight - 110,
+      (App.gameHeight / 30) * 1,
+      (App.gameHeight / 30) * 1,
       "ostrich"
     );
     this.playerTwo = new Player(
-      (document.body.offsetWidth * 2) / 2.6,
-      document.body.offsetHeight - 110,
-      (document.body.offsetHeight / 30) * 1,
-      (document.body.offsetHeight / 30) * 1,
+      (App.gameWidth * 2) / 2.6,
+      App.gameHeight - 120,
+      (App.gameHeight / 30) * 1,
+      (App.gameHeight / 30) * 1,
       "dodo"
     );
   }
 
   createNewPlatformIfNeeded(platform) {
-    if (platform.sprite.position.y > document.body.offsetHeight + 50) {
+    if (platform.sprite.position.y > App.gameHeight + 75) {
       if (!platform.hasExitedScreen) {
         this.platforms.createPlatform(
-          Math.random() * document.body.offsetWidth,
+          Math.random() * App.gameWidth,
           -30,
           200,
           30
         );
         platform.hasExitedScreen = true;
+        App.remove(platform.sprite);
+        Matter.World.remove(App.physics.world, platform.body);
       }
     } else {
       platform.hasExitedScreen = false;
@@ -83,8 +85,8 @@ export class Game {
       text: `${player.body.bodyName} wins!`,
       style,
     });
-    gameOverText.x = document.body.offsetWidth / 2 - gameOverText.width / 2;
-    gameOverText.y = document.body.offsetHeight / 2;
+    gameOverText.x = App.gameWidth / 2 - gameOverText.width / 2;
+    gameOverText.y = App.gameHeight / 2;
 
     const restartText = new Text({
       text: "Please refresh page to play again.",
@@ -94,29 +96,49 @@ export class Game {
     restartText.y = 5;
 
     this.texts.destroy();
+
     App.add(gameOverText);
     App.add(restartText);
+    player.body.isStatic = true;
   }
 
-  resetGame() {
-    this.remove(this.playerOne.sprite);
-    this.remove(this.playerTwo.sprite);
-    Matter.World(this.physics.world, this.playerOne.body);
-    Matter.World(this.physics.world, this.playerTwo.body);
-    this.app.stage.removeChildren();
+  setEvents() {
+    setTimeout(() => {
+      Matter.Events.on(
+        App.physics,
+        "collisionStart",
+        this.onCollisionStart.bind(this)
+      );
+    }, 500);
+  }
+
+  onCollisionStart(e) {
+    const colliders = [e.pairs[0].bodyA, e.pairs[0].bodyB];
+    const playerOne = colliders.find((body) => body.bodyName === "ostrich");
+    const platform = colliders.find((body) => body.gamePlatform);
+    const playerTwo = colliders.find((body) => body.bodyName === "dodo");
+
+    if (platform) {
+      if (playerOne && playerOne.velocity.y > 0) {
+        this.playerOne.onGround(platform.gamePlatform);
+      } else if (playerTwo && playerTwo.velocity.y > 0) {
+        this.playerTwo.onGround(platform.gamePlatform);
+      }
+    }
   }
 
   setGameLoopAndCamera() {
     setTimeout(() => {
       let keys = {};
       let gameOver = false;
-      let movementKeyCodes = {
+      let gameKeyCodes = {
         P1Jump: 87,
         P1Left: 65,
         P1Right: 68,
         P2Jump: 38,
         P2Left: 37,
         P2Right: 39,
+        resetGame: 89,
       };
       window.addEventListener("keydown", keysDown);
       window.addEventListener("keyup", keysUp);
@@ -138,38 +160,45 @@ export class Game {
           this.createNewPlatformIfNeeded(platform);
         });
 
-        //Jumps
+        //Game controls
         if (!gameOver) {
-          if (keys[movementKeyCodes.P1Jump]) {
+          //Jumps
+          if (keys[gameKeyCodes.P1Jump]) {
             this.playerOne.jump();
           }
-          if (keys[movementKeyCodes.P2Jump]) {
+          if (keys[gameKeyCodes.P2Jump]) {
             this.playerTwo.jump();
           }
           //Movement left
-          if (keys[movementKeyCodes.P1Left]) {
+          if (keys[gameKeyCodes.P1Left]) {
             this.playerOne.move("left");
           }
-          if (keys[movementKeyCodes.P2Left]) {
+          if (keys[gameKeyCodes.P2Left]) {
             this.playerTwo.move("left");
           }
           //Movement right
-          if (keys[movementKeyCodes.P1Right]) {
+          if (keys[gameKeyCodes.P1Right]) {
             this.playerOne.move("right");
           }
-          if (keys[movementKeyCodes.P2Right]) {
+          if (keys[gameKeyCodes.P2Right]) {
             this.playerTwo.move("right");
+          }
+        } else if (gameOver) {
+          if (keys[gameKeyCodes.resetGame]) {
+            this.playerOne.destroy();
+            this.playerTwo.destroy();
+            this.platforms.destroy();
+            App.app.ticker.remove(gameLoop);
           }
         }
 
         const playerOneY = this.playerOne.body.position.y;
         const playerTwoY = this.playerTwo.body.position.y;
-        const screenHeight = document.querySelector(".game").offsetHeight;
-        const halfwayPoint = screenHeight / 2;
-        if (playerOneY > screenHeight + 75) {
+        const halfwayPoint = App.gameHeight / 2;
+        if (playerOneY > App.gameHeight + 75) {
           gameOver = true;
           this.endGame(this.playerTwo);
-        } else if (playerTwoY > screenHeight + 75) {
+        } else if (playerTwoY > App.gameHeight + 75) {
           gameOver = true;
           this.endGame(this.playerOne);
         }
@@ -197,30 +226,5 @@ export class Game {
         }
       }
     }, 500);
-  }
-
-  setEvents() {
-    setTimeout(() => {
-      Matter.Events.on(
-        App.physics,
-        "collisionStart",
-        this.onCollisionStart.bind(this)
-      );
-    }, 500);
-  }
-
-  onCollisionStart(e) {
-    const colliders = [e.pairs[0].bodyA, e.pairs[0].bodyB];
-    const playerOne = colliders.find((body) => body.bodyName === "ostrich");
-    const platform = colliders.find((body) => body.gamePlatform);
-    const playerTwo = colliders.find((body) => body.bodyName === "dodo");
-
-    if (platform) {
-      if (playerOne && playerOne.velocity.y > 0) {
-        this.playerOne.onGround(platform.gamePlatform);
-      } else if (playerTwo && playerTwo.velocity.y > 0) {
-        this.playerTwo.onGround(platform.gamePlatform);
-      }
-    }
   }
 }

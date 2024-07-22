@@ -19,7 +19,7 @@ export class Player {
   createBody = async (posX, posY, width, height, character) => {
     this.body = Matter.Bodies.rectangle(posX, posY, width / 4, height / 4, {
       collisionFilter: { category: 0x0002 },
-      friction: 0.125,
+      friction: 0.001,
       isStatic: false,
       angle: 0,
       bodyName: character,
@@ -30,7 +30,7 @@ export class Player {
             x: 0,
           },
           max: {
-            x: document.querySelector(".game").offsetWidth,
+            x: App.gameWidth,
           },
         },
       },
@@ -70,14 +70,14 @@ export class Player {
       Matter.Body.applyForce(
         this.body,
         { x: this.body.position.x, y: this.body.position.y },
-        { x: -0.0005, y: 0 }
+        { x: -0.0003, y: 0 }
       );
       this.sprite.scale.x = -1;
     } else if (direction === "right") {
       Matter.Body.applyForce(
         this.body,
         { x: this.body.position.x, y: this.body.position.y },
-        { x: 0.0005, y: 0 }
+        { x: 0.0003, y: 0 }
       );
       this.sprite.scale.x = 1;
     }
@@ -91,7 +91,7 @@ export class Player {
       this.platform = null;
       Matter.Body.setVelocity(this.body, {
         x: 0,
-        y: -(document.body.offsetHeight / 48),
+        y: -(App.gameHeight / 42),
       });
 
       //Sound
@@ -127,5 +127,10 @@ export class Player {
   update() {
     this.sprite.x = this.body.position.x - this.sprite.width / 2;
     this.sprite.y = this.body.position.y - this.sprite.height / 2;
+  }
+
+  destroy() {
+    App.remove(this.sprite);
+    Matter.World.remove(App.physics.world, this.body);
   }
 }

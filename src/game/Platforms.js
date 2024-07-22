@@ -31,30 +31,40 @@ export class Platforms {
   }
 
   createFloor() {
-    let gameWidth = document.querySelector(".game").offsetWidth;
-    let gameHeight = document.querySelector(".game").offsetHeight;
-    this.floor = this.createPlatform(gameWidth / 2, gameHeight, gameWidth, 30);
-    this.leftWall = this.createPlatform(gameWidth, gameHeight - 40, 64, 200);
+    this.floor = this.createPlatform(
+      App.gameWidth / 2,
+      App.gameHeight,
+      App.gameWidth,
+      30
+    );
+    this.leftWall = this.createPlatform(
+      App.gameWidth,
+      App.gameHeight - 40,
+      64,
+      200
+    );
 
-    this.rightWall = this.createPlatform(0, gameHeight - 40, 64, 200);
+    this.rightWall = this.createPlatform(0, App.gameHeight - 40, 64, 200);
   }
 
   createStarterPlatforms() {
-    let gameWidth = document.querySelector(".game").offsetWidth;
-    let gameHeight = document.querySelector(".game").offsetHeight;
-
     setTimeout(() => {
       this.createPlatform(
-        gameWidth / 2,
-        gameHeight - gameHeight / 6,
+        App.gameWidth / 2,
+        App.gameHeight - App.gameHeight / 6,
         64 * 10,
         32
       );
-      this.createPlatform(gameWidth / 2, 620, 64 * 6, 32);
-      this.createPlatform(gameWidth / 2, 520, 64 * 4, 32);
-      this.createPlatform(gameWidth / 2, 420, 64 * 2, 32);
-      this.createPlatform(gameWidth / 4, 220, 64 * 4, 32);
-      this.createPlatform(gameWidth / 4 + gameWidth / 2, 100, 64 * 4, 32);
+      this.createPlatform(App.gameWidth / 2, 620, 64 * 6, 32);
+      this.createPlatform(App.gameWidth / 2, 520, 64 * 4, 32);
+      this.createPlatform(App.gameWidth / 2, 420, 64 * 2, 32);
+      this.createPlatform(App.gameWidth / 4, 220, 64 * 4, 32);
+      this.createPlatform(
+        App.gameWidth / 4 + App.gameWidth / 2,
+        100,
+        64 * 4,
+        32
+      );
     }, 3500);
   }
 
@@ -73,7 +83,9 @@ export class Platforms {
   }
 
   destroy() {
-    App.app.stage.removeChild(this.sprite);
-    Matter.World.remove(App.physics.world, this.body);
+    Platforms.platforms.forEach((platform) => {
+      App.remove(platform.sprite);
+      Matter.World.remove(App.physics.world, this.body);
+    });
   }
 }

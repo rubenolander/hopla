@@ -3,14 +3,20 @@ import MatterWrap from "matter-wrap";
 import { Application } from "pixi.js";
 
 class GameApplication {
+  constructor() {
+    this.gameContainer = document.querySelector(".game");
+    this.gameHeight = this.gameContainer.offsetHeight;
+    this.gameWidth = this.gameContainer.offsetWidth;
+  }
+
   run = async () => {
     this.app = new Application();
     await this.app.init({
       antialias: true,
-      resizeTo: document.querySelector(".game"),
+      resizeTo: this.gameContainer,
       useBackBuffer: true,
     });
-    document.querySelector(".game").appendChild(this.app.canvas);
+    this.gameContainer.appendChild(this.app.canvas);
     await this.createPhysics();
   };
 
@@ -24,6 +30,10 @@ class GameApplication {
 
   add(item) {
     this.app.stage.addChild(item);
+  }
+
+  remove(item) {
+    this.app.stage.removeChild(item);
   }
 }
 
