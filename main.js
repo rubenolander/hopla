@@ -17,6 +17,6 @@ button.textContent = "CLICK TO START H O P . L A";
 document.querySelector(".game").appendChild(button);
 button.addEventListener("click", () => {
   //Initialize the PIXI application and load physics engine.
-  const game = new Game();
+  new Game();
   document.querySelector(".game").removeChild(button);
 });

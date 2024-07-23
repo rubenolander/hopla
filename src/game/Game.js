@@ -2,7 +2,7 @@ import { Text } from "pixi.js";
 import Matter from "matter-js";
 import { App } from "./Application";
 import { Background } from "./Background";
-import { InfoText } from "./Text";
+import { GameText } from "./Text";
 import { Platforms } from "./Platforms";
 import { Player } from "./Player";
 
@@ -21,6 +21,18 @@ export class Game {
     this.setGameLoopAndCamera();
   }
 
+  reset() {
+    this.playerOne.destroy();
+    this.playerTwo.destroy();
+    this.platforms.destroy();
+    this.background.destroy();
+    this.preGameTexts.destroy();
+    this.endGameTexts.destroy();
+    App.app.ticker.stop();
+
+    this.init();
+  }
+
   startGame() {
     App.run();
   }
@@ -30,7 +42,9 @@ export class Game {
   }
 
   setTexts() {
-    this.texts = new InfoText();
+    this.preGameTexts = new GameText();
+    this.endGameTexts = new GameText();
+    this.preGameTexts.printStartingTexts();
   }
 
   createPlatforms() {
@@ -74,34 +88,6 @@ export class Game {
     }
   }
 
-  endGame(player) {
-    const style = {
-      fontFamily: "2p",
-      fontSize: 70,
-      align: "center",
-      fill: 0xffffff,
-    };
-    const gameOverText = new Text({
-      text: `${player.body.bodyName} wins!`,
-      style,
-    });
-    gameOverText.x = App.gameWidth / 2 - gameOverText.width / 2;
-    gameOverText.y = App.gameHeight / 2;
-
-    const restartText = new Text({
-      text: "Please refresh page to play again.",
-      style,
-    });
-    restartText.x = 5;
-    restartText.y = 5;
-
-    this.texts.destroy();
-
-    App.add(gameOverText);
-    App.add(restartText);
-    player.body.isStatic = true;
-  }
-
   setEvents() {
     setTimeout(() => {
       Matter.Events.on(
@@ -129,6 +115,7 @@ export class Game {
 
   setGameLoopAndCamera() {
     setTimeout(() => {
+      App.app.ticker.start();
       let keys = {};
       let gameOver = false;
       let gameKeyCodes = {
@@ -185,10 +172,7 @@ export class Game {
           }
         } else if (gameOver) {
           if (keys[gameKeyCodes.resetGame]) {
-            this.playerOne.destroy();
-            this.playerTwo.destroy();
-            this.platforms.destroy();
-            App.app.ticker.remove(gameLoop);
+            this.reset();
           }
         }
 
@@ -208,7 +192,7 @@ export class Game {
             let heightDifference = playerOneY - halfwayPoint;
             this.background.update(heightDifference / 30);
             this.platforms.update(heightDifference / 48);
-            this.texts.move(heightDifference / 48);
+            this.preGameTexts.move(heightDifference / 48);
             Matter.Body.setPosition(this.playerOne.body, {
               x: this.playerOne.body.position.x,
               y: halfwayPoint + heightDifference,
@@ -218,7 +202,7 @@ export class Game {
           let heightDifference = playerTwoY - halfwayPoint;
           this.background.update(heightDifference / 30);
           this.platforms.update(heightDifference / 48);
-          this.texts.move(heightDifference / 48);
+          this.preGameTexts.move(heightDifference / 48);
           Matter.Body.setPosition(this.playerTwo.body, {
             x: this.playerTwo.body.position.x,
             y: halfwayPoint + heightDifference,
@@ -226,5 +210,10 @@ export class Game {
         }
       }
     }, 500);
+  }
+
+  endGame(player) {
+    this.endGameTexts.printGameOverTexts(player.body.bodyName);
+    player.body.isStatic = true;
   }
 }

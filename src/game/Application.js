@@ -10,6 +10,10 @@ class GameApplication {
   }
 
   run = async () => {
+    if (this.app && this.app.canvas) {
+      this.gameContainer.removeChild(this.app.canvas);
+    }
+
     this.app = new Application();
     await this.app.init({
       antialias: true,

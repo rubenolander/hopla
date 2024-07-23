@@ -91,7 +91,7 @@ export class Player {
       this.platform = null;
       Matter.Body.setVelocity(this.body, {
         x: 0,
-        y: -(App.gameHeight / 42),
+        y: -(App.gameHeight / 36),
       });
 
       //Sound

@@ -65,7 +65,7 @@ export class Platforms {
         64 * 4,
         32
       );
-    }, 3500);
+    }, 3000);
   }
 
   move(platform, number) {
@@ -87,5 +87,6 @@ export class Platforms {
       App.remove(platform.sprite);
       Matter.World.remove(App.physics.world, this.body);
     });
+    Platforms.platforms = [];
   }
 }
