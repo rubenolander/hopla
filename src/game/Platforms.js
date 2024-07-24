@@ -35,7 +35,7 @@ export class Platforms {
       App.gameWidth / 2,
       App.gameHeight,
       App.gameWidth,
-      30
+      32
     );
     this.leftWall = this.createPlatform(
       App.gameWidth,
@@ -47,24 +47,44 @@ export class Platforms {
     this.rightWall = this.createPlatform(0, App.gameHeight - 40, 64, 200);
   }
 
+  //This function creates the starting platforms after some time.
   createStarterPlatforms() {
     setTimeout(() => {
+      //Big, almost half screen width platform just above players.
       this.createPlatform(
         App.gameWidth / 2,
-        App.gameHeight - App.gameHeight / 6,
+        App.gameHeight - App.gameHeight / 4.5,
         64 * 10,
         32
       );
-      this.createPlatform(App.gameWidth / 2, 620, 64 * 6, 32);
-      this.createPlatform(App.gameWidth / 2, 520, 64 * 4, 32);
-      this.createPlatform(App.gameWidth / 2, 420, 64 * 2, 32);
-      this.createPlatform(App.gameWidth / 4, 220, 64 * 4, 32);
+      //Quarter size platform just above it.
       this.createPlatform(
-        App.gameWidth / 4 + App.gameWidth / 2,
-        100,
+        App.gameWidth / 2,
+        App.gameHeight - App.gameHeight / 2.5,
+        64 * 6,
+        32
+      );
+      //Hidden platform for starters, to create more during the game.
+      this.createPlatform(
+        App.gameWidth / 2,
+        App.gameHeight - App.gameHeight / 2,
+        64 * 4,
+        0
+      );
+      this.createPlatform(App.gameWidth / 2, App.gameHeight / 2, 64 * 2, 32);
+
+      //The following three are spread out, left, right and middle (spawning above game screen).
+      //to make it interesting but also not a random start.
+      this.createPlatform(App.gameWidth / 4, App.gameHeight / 4.2, 64 * 4, 32);
+
+      this.createPlatform(
+        App.gameWidth - App.gameWidth / 4,
+        App.gameHeight / 10,
         64 * 4,
         32
       );
+
+      this.createPlatform(App.gameWidth / 2, -App.gameHeight / 10, 64 * 4, 32);
     }, 3000);
   }
 

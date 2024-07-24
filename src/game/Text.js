@@ -4,21 +4,28 @@ import { Container, Text } from "pixi.js";
 
 export class GameText {
   constructor() {
-    this.container = new Container();
-    App.add(this.container);
-  }
-
-  async printStartingTexts() {
-    let controlsTextStyle = {
+    this.textStyle = {
       fontFamily: "2p",
       fontSize: 24,
       align: "center",
       fill: 0xffffff,
     };
+    this.container = new Container();
+    App.add(this.container);
+  }
+
+  async printStartingTexts() {
+    const gameTitle = new Text({
+      text: "H O P . L A",
+      style: { ...this.textStyle, fontSize: 70 },
+    });
+    gameTitle.x = App.gameWidth / 2 - gameTitle.width / 2;
+    gameTitle.y = 300;
+    this.container.addChild(gameTitle);
 
     const playerOneJump = new Text({
       text: "W Jump",
-      style: controlsTextStyle,
+      style: this.textStyle,
     });
     playerOneJump.x = App.gameWidth / 15;
     playerOneJump.y = App.gameHeight - App.gameHeight / 10;
@@ -26,7 +33,7 @@ export class GameText {
 
     const playerOneLeft = new Text({
       text: "A Left",
-      style: controlsTextStyle,
+      style: this.textStyle,
     });
     playerOneLeft.x = App.gameWidth / 15;
     playerOneLeft.y = playerOneJump.y - App.gameHeight / 30;
@@ -34,7 +41,7 @@ export class GameText {
 
     const playerOneRight = new Text({
       text: "D Right",
-      style: controlsTextStyle,
+      style: this.textStyle,
     });
     playerOneRight.x = App.gameWidth / 15;
     playerOneRight.y = playerOneJump.y + App.gameHeight / 30;
@@ -42,7 +49,7 @@ export class GameText {
 
     const playerTwoJump = new Text({
       text: `\u2191 Jump`,
-      style: controlsTextStyle,
+      style: this.textStyle,
     });
     playerTwoJump.x = App.gameWidth - App.gameWidth / 6;
     playerTwoJump.y = App.gameHeight - App.gameHeight / 10;
@@ -50,7 +57,7 @@ export class GameText {
 
     const playerTwoLeft = new Text({
       text: `\u2190 Left`,
-      style: controlsTextStyle,
+      style: this.textStyle,
     });
     playerTwoLeft.x = App.gameWidth - App.gameWidth / 6;
     playerTwoLeft.y = playerTwoJump.y - App.gameHeight / 30;
@@ -58,43 +65,38 @@ export class GameText {
 
     const playerTwoRight = new Text({
       text: `\u2192 Right`,
-      style: controlsTextStyle,
+      style: this.textStyle,
     });
     playerTwoRight.x = App.gameWidth - App.gameWidth / 6;
     playerTwoRight.y = playerTwoJump.y + App.gameHeight / 30;
     this.container.addChild(playerTwoRight);
+  }
 
-    const gameTitle = new Text({
-      text: "H O P . L A",
-      style: {
-        fontSize: 70,
-        align: "center",
-        fill: 0xffffff,
-        fontFamily: "2p",
-      },
+  printGetReadyTexts() {
+    const getReadyText = new Text({
+      text: "Get ready! Starting ...",
+      style: this.textStyle,
     });
-    gameTitle.x = App.gameWidth / 2 - gameTitle.width / 2;
-    gameTitle.y = 300;
-    this.container.addChild(gameTitle);
+    getReadyText.x = App.gameWidth / 2 - getReadyText.width / 2;
+    getReadyText.y = App.gameHeight - App.gameHeight / 10;
+    this.container.addChild(getReadyText);
+    setTimeout(() => {
+      getReadyText.text = "^^ GO! ^^";
+      getReadyText.x = App.gameWidth / 2 - getReadyText.width / 2;
+    }, 3500);
   }
 
   printGameOverTexts(bodyName) {
-    const style = {
-      fontFamily: "2p",
-      fontSize: 70,
-      align: "center",
-      fill: 0xffffff,
-    };
     const gameOverText = new Text({
       text: `${bodyName} wins!`,
-      style: style,
+      style: { ...this.textStyle, fontSize: 72 },
     });
     gameOverText.x = App.gameWidth / 2 - gameOverText.width / 2;
     gameOverText.y = App.gameHeight / 2;
 
     const restartText = new Text({
       text: 'Press "Y" to play again!',
-      style: { ...style, fontSize: 60 },
+      style: { ...this.textStyle, fontSize: 60 },
     });
     restartText.x = App.gameWidth / 2 - restartText.width / 2;
     restartText.y = 5;

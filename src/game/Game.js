@@ -1,4 +1,3 @@
-import { Text } from "pixi.js";
 import Matter from "matter-js";
 import { App } from "./Application";
 import { Background } from "./Background";
@@ -45,6 +44,7 @@ export class Game {
     this.preGameTexts = new GameText();
     this.endGameTexts = new GameText();
     this.preGameTexts.printStartingTexts();
+    this.preGameTexts.printGetReadyTexts();
   }
 
   createPlatforms() {
@@ -73,15 +73,25 @@ export class Game {
   createNewPlatformIfNeeded(platform) {
     if (platform.sprite.position.y > App.gameHeight + 75) {
       if (!platform.hasExitedScreen) {
+        const numberArray = [3, 4, 5];
+        const randomIndex = Math.floor(Math.random() * numberArray.length);
+        const randomMultiplier = numberArray[randomIndex];
+        const platformWidth = randomMultiplier * 64;
+
         this.platforms.createPlatform(
           Math.random() * App.gameWidth,
           -30,
-          200,
-          30
+          platformWidth,
+          32
         );
         platform.hasExitedScreen = true;
         App.remove(platform.sprite);
         Matter.World.remove(App.physics.world, platform.body);
+
+        //Making sure the platform is removed from the platform array in the class.
+        Platforms.platforms = Platforms.platforms.filter(
+          (occurence) => occurence !== platform
+        );
       }
     } else {
       platform.hasExitedScreen = false;
