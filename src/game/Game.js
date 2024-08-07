@@ -28,6 +28,7 @@ export class Game {
     this.preGameTexts.destroy();
     this.endGameTexts.destroy();
     App.app.ticker.stop();
+    Matter.Events.off(App.physics);
 
     this.init();
   }
@@ -126,25 +127,25 @@ export class Game {
   setGameLoopAndCamera() {
     setTimeout(() => {
       App.app.ticker.start();
-      let keys = {};
+      let gameKeys = {};
       let gameOver = false;
       let gameKeyCodes = {
-        P1Jump: 87,
-        P1Left: 65,
-        P1Right: 68,
-        P2Jump: 38,
-        P2Left: 37,
-        P2Right: 39,
-        resetGame: 89,
+        P1Jump: "KeyW",
+        P1Left: "KeyA",
+        P1Right: "KeyD",
+        P2Jump: "ArrowUp",
+        P2Left: "ArrowLeft",
+        P2Right: "ArrowRight",
+        resetGame: "KeyY",
       };
       window.addEventListener("keydown", keysDown);
       window.addEventListener("keyup", keysUp);
 
       function keysDown(e) {
-        keys[e.keyCode] = true;
+        gameKeys[e.code] = true;
       }
       function keysUp(e) {
-        keys[e.keyCode] = false;
+        gameKeys[e.code] = false;
       }
 
       App.app.ticker.add(gameLoop.bind(this));
@@ -159,31 +160,31 @@ export class Game {
 
         //Game controls
         if (!gameOver) {
-          //Jumps
-          if (keys[gameKeyCodes.P1Jump]) {
-            this.playerOne.jump();
-          }
-          if (keys[gameKeyCodes.P2Jump]) {
-            this.playerTwo.jump();
-          }
-          //Movement left
-          if (keys[gameKeyCodes.P1Left]) {
-            this.playerOne.move("left");
-          }
-          if (keys[gameKeyCodes.P2Left]) {
-            this.playerTwo.move("left");
-          }
-          //Movement right
-          if (keys[gameKeyCodes.P1Right]) {
-            this.playerOne.move("right");
-          }
-          if (keys[gameKeyCodes.P2Right]) {
-            this.playerTwo.move("right");
-          }
-        } else if (gameOver) {
-          if (keys[gameKeyCodes.resetGame]) {
-            this.reset();
-          }
+          const playerActions = [
+            {
+              player: this.playerOne,
+              keys: [
+                gameKeyCodes.P1Jump,
+                gameKeyCodes.P1Left,
+                gameKeyCodes.P1Right,
+              ],
+            },
+            {
+              player: this.playerTwo,
+              keys: [
+                gameKeyCodes.P2Jump,
+                gameKeyCodes.P2Left,
+                gameKeyCodes.P2Right,
+              ],
+            },
+          ];
+          playerActions.forEach(({ player, keys }) => {
+            if (gameKeys[keys[0]]) player.jump();
+            if (gameKeys[keys[1]]) player.move("left");
+            if (gameKeys[keys[2]]) player.move("right");
+          });
+        } else if (gameKeys[gameKeyCodes.resetGame]) {
+          this.reset();
         }
 
         const playerOneY = this.playerOne.body.position.y;
