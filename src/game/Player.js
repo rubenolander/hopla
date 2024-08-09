@@ -9,11 +9,10 @@ export class Player {
   }
 
   getSprites(spriteType) {
-    this.spriteLeft = Texture.from(`../sprites/${spriteType}Left.png`);
-    this.spriteRight = Texture.from(`../sprites/${spriteType}Right.png`);
+    this.spriteMoveOne = Texture.from(`../sprites/${spriteType}MoveOne.png`);
+    this.spriteMoveTwo = Texture.from(`../sprites/${spriteType}MoveTwo.png`);
     this.spriteIdle = Texture.from(`../sprites/${spriteType}Idle.png`);
     this.spriteJump = Texture.from(`../sprites/${spriteType}Jump.png`);
-    return this;
   }
 
   createBody = async (posX, posY, width, height, character) => {
@@ -59,11 +58,11 @@ export class Player {
       (direction === "left" && !this.sprite.playing) ||
       (direction === "right" && !this.sprite.playing)
     ) {
-      this.sprite.textures = [this.spriteLeft, this.spriteRight];
+      this.sprite.textures = [this.spriteMoveOne, this.spriteMoveTwo];
       this.sprite.play();
     }
     {
-      this.sprite.textures = [this.spriteLeft, this.spriteRight];
+      this.sprite.textures = [this.spriteMoveOne, this.spriteMoveTwo];
       this.sprite.play();
     }
     if (direction === "left") {
