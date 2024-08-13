@@ -28,8 +28,6 @@ export class Game {
     this.preGameTexts.destroy();
     this.endGameTexts.destroy();
     App.app.ticker.stop();
-    Matter.Events.off(App.physics, "collisionStart");
-
     this.init();
   }
 
